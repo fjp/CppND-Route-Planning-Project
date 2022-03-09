@@ -27,6 +27,24 @@ static std::optional<std::vector<std::byte>> ReadFile(const std::string &path)
     return std::move(contents);
 }
 
+//check here if the input is in the range [0, 100]
+bool checkRange(float user_input_x, float user_input_y)
+{
+    return user_input_x >= 0 && user_input_x <= 100 
+        && user_input_y >= 0 && user_input_y <= 100;
+}
+
+// this function asks the user to get the input and shows some output in return
+void getInput(float& user_input_x, float& user_input_y)
+{
+    std::cin >> user_input_x >> user_input_y;
+    while (!checkRange(user_input_x, user_input_y))
+    {
+        std::cout << "Input of x and y must be in the range [0, 100]" << std::endl;
+        std::cin >> user_input_x >> user_input_y;
+    }
+}
+
 int main(int argc, const char **argv)
 {    
     std::string osm_data_file = "";
@@ -51,14 +69,11 @@ int main(int argc, const char **argv)
         else
             osm_data = std::move(*data);
     }
-    //Complete this TODO to satisfy Project Rubric Criterias of User Input
   
-    // TODO 1: Declare floats `start_x`, `start_y`, `end_x`, and `end_y` and get
-    // user input for these values using std::cin. Pass the user input to the
-    // RoutePlanner object below in place of 10, 10, 90, 90.
     float start_x, start_y, end_x, end_y;
     std::cout << "Enter start x and y positions as well as x and y end positions:\n";
-    std::cin >> start_x >> start_y >> end_x >> end_y;
+    getInput(start_x, start_y);
+    getInput(end_x, end_y);
 
     // Build Model.
     RouteModel model{osm_data};
