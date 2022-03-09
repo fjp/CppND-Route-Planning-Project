@@ -35,11 +35,11 @@ void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
         // Set the h value
         neighbor->h_value = CalculateHValue(neighbor);
       
-        // Add the neighbor to open_list
-        open_list.emplace_back(neighbor);
-      
         // Set the node's visited attribute to true
         neighbor->visited = true;
+
+        // Add the neighbor to open_list
+        open_list.emplace_back(neighbor);
     }
 }
 
@@ -47,9 +47,7 @@ void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
 // Sort the open list according to the sum of the h value and g value and return the next node (node with lowest sum).
 RouteModel::Node *RoutePlanner::NextNode() {
     std::sort(open_list.begin(), open_list.end(), [](RouteModel::Node* a, RouteModel::Node* b) {
-        float sum_a = a->g_value + a->h_value;
-        float sum_b = b->g_value + b->h_value;
-        return sum_a > sum_b;
+        return a->g_value + a->h_value > b->g_value + b->h_value;
     });
     
     RouteModel::Node* node_lowest_sum = open_list.back();
@@ -92,10 +90,9 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
 void RoutePlanner::AStarSearch() {
     RouteModel::Node *current_node = nullptr;
 
-    // TODO: Implement your solution here.
-    open_list.push_back(start_node);
     start_node->visited = true;
-    while (open_list.size() > 0)
+    open_list.emplace_back(start_node);
+    while (!open_list.empty())
     {
         RouteModel::Node* next_node = NextNode();
         if (next_node == end_node)
